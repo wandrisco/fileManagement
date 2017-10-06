@@ -60,18 +60,17 @@ void EraseAllSectors() {
 
 void EraseSector(int nSectorNr)
 {
-	
+	int i;
 	
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
-	
+	for (i= nSectorNr*64000; i<((nSectorNr+1)*64000); ++i)
+	{
+		char x = ~0;
+		myFile.write(&x, sizeof(char));
+	}
+}
 
 	
-		int lb = nSectorNr * 64000;
-		int hb = ((nSectorNr + 1) * 64000);
-		for (lb; lb < hb; ++lb)
-		{
-			char x = 1;
-			myFile.write(&x, sizeof(char));
-		}
-} 
+		
+
 
