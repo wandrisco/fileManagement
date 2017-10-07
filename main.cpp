@@ -27,12 +27,11 @@ our file system.
 
 using namespace std;
 
-void menu(), choice(int input), EraseAllSectors();
+void menu(), choice(int input), EraseAllSectors(), returnMenu();
 int EraseSector(int nSectorNr), ReadWord(int nAddress);
 
 //Creates a file that is 20*64k bytes long
 int main(void) {
-
     int X = 64000 * 20;
     FILE *fp = fopen("myfile.bin", "wb");
     fseek(fp, X, SEEK_SET);
@@ -96,23 +95,14 @@ void choice(int input) {
     }
 }
 
-//returnMenu needs to be fixed to return to previous selected menu, instead of readWord
+
 void returnMenu(){
-    char input;
     int n;
+    char input;
     cout << "Return to Main Menu? (y/n)\n";
     cin >> input;
     cout << endl;
     if (input == 'n') {
-        cout << "Enter a New Address to Read From: ";
-        cin >> n;
-        while (n % 2 != 0)
-        {
-            cout << "Invalid address \n";
-            cout << "Enter a New Address: ";
-            cin >> n;
-        }
-        ReadWord(n);
     }
     else {
         menu();
@@ -155,7 +145,6 @@ int EraseSector(int nSectorNr) {
 }
 
 int ReadWord(int nAddress) {
-
     char filename[] = "myfile.bin";
     unsigned char buf[2];
     FILE *fp;
