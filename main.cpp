@@ -43,8 +43,7 @@ int main(void) {
 
     return 0;
 }
-/*When a menu option is called and then the returnMenu is called,
- * when selecting to terminate driver the program reruns the function called prior to returnMenu*/
+
 void menu(){
     int input;
     cout << "*****DRIVER*************\n"
