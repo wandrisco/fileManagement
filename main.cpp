@@ -44,7 +44,7 @@ int main(void) {
     return 0;
 }
 /*When a menu option is called and then the returnMenu is called,
- * when selecting to terminate driver the program reruns the function called prior to returnMenu*/  
+ * when selecting to terminate driver the program reruns the function called prior to returnMenu*/
 void menu(){
     int input;
     cout << "*****DRIVER*************\n"
@@ -69,29 +69,29 @@ void choice(int input) {
                 EraseAllSectors();
                 break;
             case 2:
-                cout << "Enter a Sector to Erase from Memory: ";
+                cout << "Enter a sector to erase from memory: ";
                 cin >> nAddress;
                 EraseSector(nAddress);
                 break;
             case 3:
-                cout << "Enter an Address to Read From: ";
+                cout << "Enter an address location to read from: ";
                 cin >> nAddress;
                 while (nAddress % 2 != 0)
                 {
                     cout << "Invalid address \n";
-                    cout << "Enter a New Address: ";
+                    cout << "Enter a new address location: ";
                     cin >> nAddress;
                 }
                 ReadWord(nAddress);
                 break;
             case 4:
-                cout << "Enter an Address to Write to: ";
+                cout << "Enter an address location to write to: ";
                 cin >> nAddress;
                 writeWord(nAddress);
                 break;
             //Working on Invalid Entry Response
             default:
-                cout << "Invalid Entry. Please Enter New Option: ";
+                cout << "Invalid Entry. Please enter new option: ";
                 cin >> input;
                 choice(input);
                 cin.ignore();
@@ -126,7 +126,7 @@ void EraseAllSectors() {
         char x = ~0;
         myFile.write(&x, sizeof(char));
     }
-    cout << "All Sectors Successfully Erased\n\n";
+    cout << "All sectors successfully erased\n\n";
     returnMenu();
 }
 
@@ -143,10 +143,11 @@ int EraseSector(int nSectorNr) {
         myFile.write(&x, sizeof(char));
     }
 
-    cout << "Sector " << (lb / 64000) - 1 << " Successfully Erased\n\n";
+    cout << "Sector " << (lb / 64000) - 1 << " successfully erased\n\n";
     returnMenu();
     return 0;
 }
+
 int ReadWord(int nAddress) {
     char filename[] = "myfile.bin";
     unsigned char buf[2];
@@ -157,10 +158,12 @@ int ReadWord(int nAddress) {
         printf("Unable to open file: %s", filename);
         return EXIT_FAILURE;
     }
+
     fseek(fp, nAddress, SEEK_SET);
+
     if (fread(buf, 1, 2, fp) == 2)
     {
-        printf("%s","The Data at Address " );
+        printf("%s","The data at address " );
         printf("%i", nAddress);
         printf("%s", " Reads: ");
         printf("%02x %02x\n\n", (int)buf[0], (int)buf[1]);
@@ -171,38 +174,33 @@ int ReadWord(int nAddress) {
     fclose(fp);
     return 0;
 }
-
+//writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
 int writeWord(int nSectorNr) {
-    ofstream myFile;
-    myFile.open("myfile.bin", ios::out | ios::binary);
-    myFile.seekp(nSectorNr * 64000);
+    fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 
-    int lb = nSectorNr * 64000;
-    int hb = ((nSectorNr + 1) * 64000);
+    if (!myFile.is_open()){
+        cout << "Invalid File.";
+        menu();
+    }
+    else {
+        myFile.seekp(nSectorNr * 64000);
+        char bytes;
 
-    for (lb; lb < hb; ++lb) {
-        unsigned char buf[2], bytes;
-        char filename[] = "myfile.bin";
-        FILE *fp;
+        int lb = nSectorNr * 64000;
+        int hb = ((nSectorNr + 1) * 64000);
 
-        if ((fp = fopen(filename, "rb")) == NULL)
-        {
-            printf("Unable to open file: %s\n", filename);
-            return EXIT_FAILURE;
+        cout << "Enter bytes to be written to address location " << nSectorNr << ": ";
+        cin >> bytes;
+        cin.ignore();
+        cout << endl;
+
+        for (lb; lb < hb; ++lb) {
+            myFile.write(&bytes, sizeof(char));
+
         }
-        fseek(fp, nSectorNr, SEEK_SET);
-        if (fread(buf, 1, 2, fp) == 2)
-        {
-            cout << "Please enter bytes to write: ";
-            cin >> bytes;
-            myFile.write((char *)&bytes, sizeof(buf));
 
-            printf("%s","The Data at Address " );
-            printf("%i", nSectorNr);
-            printf("%s", " Reads: ");
-            printf("%02x %02x\n\n", (int)buf[0], (int)buf[1]);
-
-            returnMenu();
-        }
+        cout << bytes << " was successfully written to address location" << (lb / 64000) - 1 << ".\n\n";
+        returnMenu();
+        return 0;
     }
 }
