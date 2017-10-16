@@ -27,9 +27,15 @@ our file system.
 
 using namespace std;
 
+<<<<<<< HEAD
 void menu(), choice(int input), EraseAllSectors(), returnMenu();
 int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress), checkAddress(int nAddress);
 
+=======
+void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), ;
+;
+char* ReadWord(int nAddress);
+>>>>>>> Kristian
 //Creates a file that is 20*64k bytes long
 int main(void) {
 	/*int X = 65536 * 20;
@@ -81,14 +87,28 @@ void choice(int input) {
 		case 3:
 			cout << "Enter an address location to read from: ";
 			cin >> nAddress;
+<<<<<<< HEAD
 			nnAddress=checkAddress(nAddress);
 			ReadWord(nnAddress);
+=======
+			while (nAddress % 2 != 0)
+			{
+				cout << "Invalid address \n";
+				cout << "Enter a new address location: ";
+				cin >> nAddress;
+			}
+			ReadWord(nAddress);
+>>>>>>> Kristian
 			break;
 		case 4:
 			cout << "Enter an address location to write to: ";
 			cin >> nAddress;
+<<<<<<< HEAD
 			nnAddress=checkAddress(nAddress);
 			writeWord(nnAddress);
+=======
+			writeWord(nAddress);
+>>>>>>> Kristian
 			break;
 			//Working on Invalid Entry Response
 		default:
@@ -132,7 +152,11 @@ void EraseAllSectors() {
 	returnMenu();
 }
 
+<<<<<<< HEAD
 int EraseSector(int nSectorNr) {
+=======
+void EraseSector(int nSectorNr) {
+>>>>>>> Kristian
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 	myFile.seekp(nSectorNr * 65536);
 
@@ -150,7 +174,11 @@ int EraseSector(int nSectorNr) {
 	return 0;
 }
 
+<<<<<<< HEAD
 int ReadWord(int nAddress) {
+=======
+char* ReadWord(int nAddress) {
+>>>>>>> Kristian
 	char filename[] = "myfile.bin";
 	unsigned char buf[2];
 	FILE *fp;
@@ -174,10 +202,17 @@ int ReadWord(int nAddress) {
 	}
 
 	fclose(fp);
+<<<<<<< HEAD
 	return 0;
 }
 //writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
 int writeWord(int nSectorNr) {
+=======
+	return buf;
+}
+//writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
+void writeWord(int nSectorNr) {
+>>>>>>> Kristian
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 
 	if (!myFile.is_open()){
@@ -212,6 +247,7 @@ int writeWord(int nSectorNr) {
 		
 		return 0;
 	}
+<<<<<<< HEAD
 }
 
 int checkAddress(int nAddress){
@@ -224,4 +260,6 @@ int checkAddress(int nAddress){
 		nnAddress = nAddress;
 	}
 	return nnAddress;
+=======
+>>>>>>> Kristian
 }
