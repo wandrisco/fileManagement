@@ -15,7 +15,7 @@
  J00612810
  
  Assigned:10-04-2017
- Due: 10-11-2017
+ Due: 10-16-2017
  
  The purpose of this code is to simulate driver functions for
  our file system.
@@ -32,19 +32,18 @@
 
 using namespace std;
 
-using namespace std;
-
 void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), createFile();
+
 int checkAddress(int nAddress);
+
 unsigned char* ReadWord(int nAddress);
 
-//Creates a file that is 20*64k bytes long
 int main(void) {
     
     menu();
     return 0;
 }
-
+//displays menu input options
 void menu() {
     int input;
     cout << "*****DRIVER*************\n"
@@ -61,13 +60,13 @@ void menu() {
     choice(input);
 }
 
+//allows user to input a choice
 void choice(int input) {
     int nAddress, nSector, nnAddress;
     while (input != 5) {
         switch (input) {
             case 1:
                 EraseAllSectors();
-                //menu();
                 returnMenu();
                 break;
                 
@@ -81,7 +80,6 @@ void choice(int input) {
                     cout << "\n";
                 }
                 EraseSector(nSector);
-                //menu();
                 returnMenu();
                 break;
                 
@@ -90,7 +88,6 @@ void choice(int input) {
                 cin >> nAddress;
                 nnAddress = checkAddress(nAddress);
                 ReadWord(nnAddress);
-                //menu();
                 returnMenu();
                 break;
                 
@@ -99,7 +96,6 @@ void choice(int input) {
                 cin >> nAddress;
                 nnAddress = checkAddress(nAddress);
                 writeWord(nnAddress);
-                //menu();
                 returnMenu();
                 break;
                 
@@ -118,6 +114,7 @@ void choice(int input) {
     }
 }
 
+//prompts user to return back to menu or repeat function
 void returnMenu() {
     char input;
     cout << "Return to Main Menu? (y/n)\n";
@@ -135,6 +132,7 @@ void returnMenu() {
     }
 }
 
+//erases all sectors in the file, creates a file if one is not present
 void EraseAllSectors() {
     
     createFile();
@@ -148,6 +146,7 @@ void EraseAllSectors() {
     cout << "All sectors successfully erased\n\n";
 }
 
+//erase a sector from user prompt, creates a file if one is not present
 void EraseSector(int nSectorNr) {
     
     createFile();
@@ -167,6 +166,7 @@ void EraseSector(int nSectorNr) {
     cout << "Sector " << (lb / 65536) - 1 << " successfully erased.\n\n";
 }
 
+//reads a word from an address in the file, creates a file if one is not present
 unsigned char* ReadWord(int nAddress) {
     
     createFile();
@@ -197,8 +197,7 @@ unsigned char* ReadWord(int nAddress) {
     }
 }
 
-//bitwise addition needs help
-
+//bitwise does not check, but does write, creates a file if one is not present
 void writeWord(int nAddress) {
     
     createFile();
@@ -228,6 +227,7 @@ void writeWord(int nAddress) {
     }
 }
 
+//checks if the address entered is valid
 int checkAddress(int nAddress) {
     int nnAddress;
     
@@ -245,6 +245,7 @@ int checkAddress(int nAddress) {
     }
 }
 
+//creates a file if one is not already created
 void createFile() {
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     
