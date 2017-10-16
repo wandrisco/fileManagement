@@ -27,9 +27,9 @@ our file system.
 
 using namespace std;
 
-void menu(), choice(int input), EraseAllSectors(), returnMenu();
-int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress);
-
+void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), ;
+;
+char* ReadWord(int nAddress);
 //Creates a file that is 20*64k bytes long
 int main(void) {
 	/*int X = 65536 * 20;
@@ -136,7 +136,7 @@ void EraseAllSectors() {
 	returnMenu();
 }
 
-int EraseSector(int nSectorNr) {
+void EraseSector(int nSectorNr) {
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 	myFile.seekp(nSectorNr * 65536);
 
@@ -154,7 +154,7 @@ int EraseSector(int nSectorNr) {
 	return 0;
 }
 
-int ReadWord(int nAddress) {
+char* ReadWord(int nAddress) {
 	char filename[] = "myfile.bin";
 	unsigned char buf[2];
 	FILE *fp;
@@ -178,10 +178,10 @@ int ReadWord(int nAddress) {
 	}
 
 	fclose(fp);
-	return 0;
+	return buf;
 }
 //writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
-int writeWord(int nSectorNr) {
+void writeWord(int nSectorNr) {
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 
 	if (!myFile.is_open()){
