@@ -28,7 +28,7 @@ our file system.
 using namespace std;
 
 void menu(), choice(int input), EraseAllSectors(), returnMenu();
-int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress);
+int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress), checkAddress(int nAddress);
 
 //Creates a file that is 20*64k bytes long
 int main(void) {
@@ -37,7 +37,6 @@ int main(void) {
     fseek(fp, X, SEEK_SET);
     fputc('/0', fp);
     fclose(fp);
-
 
     menu();
 
@@ -61,7 +60,7 @@ void menu(){
 }
 
 void choice(int input) {
-    int nAddress;
+    int nAddress, nnAddress;
     while (input != 5){
         switch (input) {
             case 1:
@@ -75,18 +74,14 @@ void choice(int input) {
             case 3:
                 cout << "Enter an address location to read from: ";
                 cin >> nAddress;
-                while (nAddress % 2 != 0)
-                {
-                    cout << "Invalid address \n";
-                    cout << "Enter a new address location: ";
-                    cin >> nAddress;
-                }
-                ReadWord(nAddress);
+                nnAddress=checkAddress(nAddress);
+                ReadWord(nnAddress);
                 break;
             case 4:
                 cout << "Enter an address location to write to: ";
                 cin >> nAddress;
-                writeWord(nAddress);
+                nnAddress=checkAddress(nAddress);
+                writeWord(nnAddress);
                 break;
             //Working on Invalid Entry Response
             default:
@@ -173,6 +168,7 @@ int ReadWord(int nAddress) {
     fclose(fp);
     return 0;
 }
+
 //writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
 int writeWord(int nSectorNr) {
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
@@ -198,8 +194,21 @@ int writeWord(int nSectorNr) {
 
         }
 
-        cout << bytes << " was successfully written to address location" << (lb / 64000) - 1 << ".\n\n";
+        cout << bytes << " was successfully written to address location " << (lb / 64000) - 1 << ".\n\n";
+
         returnMenu();
         return 0;
     }
+}
+
+int checkAddress(int nAddress){
+    int nnAddress;
+    while (nAddress % 2 != 0)
+    {
+        cout << "Invalid address \n";
+        cout << "Enter a new address location: ";
+        cin >> nAddress;
+        nnAddress = nAddress;
+    }
+    return nnAddress;
 }
