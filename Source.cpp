@@ -81,13 +81,13 @@ void choice(int input) {
 		case 3:
 			cout << "Enter an address location to read from: ";
 			cin >> nAddress;
-				nnAddress=checkAddress(nAddress);
+			nnAddress=checkAddress(nAddress);
 			ReadWord(nnAddress);
 			break;
 		case 4:
 			cout << "Enter an address location to write to: ";
 			cin >> nAddress;
-				nnAddress=checkAddress(nAddress);
+			nnAddress=checkAddress(nAddress);
 			writeWord(nnAddress);
 			break;
 			//Working on Invalid Entry Response
