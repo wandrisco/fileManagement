@@ -40,6 +40,9 @@ unsigned char* ReadWord(int nAddress);
 
 int main(void) {
     
+    cout << "Creators: \n"
+    << "Kristian Kilpatrick\nCorey Wandrisco\nMeshari Algumaizi\nJordan Day\n& Fernando Lorenzo\n\n";
+    
     menu();
     return 0;
 }
