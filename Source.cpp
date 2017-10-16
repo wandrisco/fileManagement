@@ -78,7 +78,6 @@ void choice(int input) {
             case 3:
                 cout << "Enter an address location to read from: ";
                 cin >> nAddress;
-                
                 nnAddress = checkAddress(nAddress);
                 ReadWord(nnAddress);
                 break;
@@ -86,8 +85,8 @@ void choice(int input) {
             case 4:
                 cout << "Enter an address location to write to: ";
                 cin >> nAddress;
-                nnnAddress = checkAddress(nAddress);
-                writeWord(nnnAddress);
+                nnAddress = checkAddress(nAddress);
+                writeWord(nnAddress);
                 break;
                 
                 //Working on Invalid Entry Response
@@ -106,9 +105,7 @@ void returnMenu(){
     cout << "Return to Main Menu? (y/n)\n";
     cin >> input;
     cout << endl;
-    if (input == 'n') {
-    }
-    else {
+    while (input = 'y'){
         menu();
     }
 }
@@ -180,36 +177,39 @@ void writeWord(int nAddress) {
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     
     if (!myFile.is_open()){
-        cout << "The file cannot be opened.";
+        cout << "The file cannot be opened.\n";
         menu();
     }
     else {
         myFile.seekp(nAddress);
         char bytes[2];
         
-        cout << "Enter bytes to be written to address location " << nAddress << ": ";
+        cout << "Enter bytes to be written to address location " << (nAddress - 1) << ": ";
         cin >> bytes;
         cin.ignore();
         cout << endl;
         
         myFile.write(bytes, 2);
         
-        cout << bytes << " was successfully written to address location " << (nAddress) << ".\n\n";
+        cout << bytes << " was successfully written to address location " << (nAddress - 1) << ".\n\n";
         returnMenu();
     }
 }
 
 
-int checkAddress(int nAddress){
+int checkAddress(int nAddress) {
     int nnAddress;
-    while (nAddress % 2 != 0)
-    {
-        cout << "Invalid address \n";
-        cout << "Enter a new address location: ";
-        cin >> nAddress;
-        nnAddress = nAddress;
-    }
-    return nnAddress;
     
+    if (nAddress % 2 != 0) {
+        while (nAddress % 2 != 0) {
+            cout << "Invalid address \n";
+            cout << "Enter a new address location: ";
+            cin >> nAddress;
+            nnAddress = nAddress;
+        }
+        return nnAddress;
+    }
+    else {
+        return nAddress;
+    }
 }
-
