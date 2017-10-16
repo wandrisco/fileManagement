@@ -193,7 +193,6 @@ unsigned char* ReadWord(int nAddress) {
         printf("%02x %02x\n\n", (int)buf[0], (int)buf[1]);
         tempWord = buf;
         fclose(fp);
-        //menu();
         return tempWord;
     }
 }
@@ -218,12 +217,13 @@ void writeWord(int nAddress) {
         cin >> bytes;
         short newWord = *bytes;
         newWord = newWord & oldWord;
+        memcpy(bytes, &newWord, 2);
         cin.ignore();
         cout << endl;
         
         myFile.write(bytes, 2);
         
-        cout << bytes << " was successfully written to address location " << (nAddress) << ".\n\n";
+        cout << newWord << " was successfully written to address location " << (nAddress) << ".\n\n";
         myFile.close();
     }
 }
