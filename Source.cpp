@@ -28,7 +28,7 @@ our file system.
 using namespace std;
 
 void menu(), choice(int input), EraseAllSectors(), returnMenu();
-int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress);
+int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress), checkAddress(int nAddress);
 
 //Creates a file that is 20*64k bytes long
 int main(void) {
@@ -81,18 +81,14 @@ void choice(int input) {
 		case 3:
 			cout << "Enter an address location to read from: ";
 			cin >> nAddress;
-			while (nAddress % 2 != 0)
-			{
-				cout << "Invalid address \n";
-				cout << "Enter a new address location: ";
-				cin >> nAddress;
-			}
-			ReadWord(nAddress);
+				nnAddress=checkAddress(nAddress);
+			ReadWord(nnAddress);
 			break;
 		case 4:
 			cout << "Enter an address location to write to: ";
 			cin >> nAddress;
-			writeWord(nAddress);
+				nnAddress=checkAddress(nAddress);
+			writeWord(nnAddress);
 			break;
 			//Working on Invalid Entry Response
 		default:
@@ -216,4 +212,16 @@ int writeWord(int nSectorNr) {
 		
 		return 0;
 	}
+}
+
+int checkAddress(int nAddress){
+	int nnAddress;
+	while (nAddress % 2 != 0)
+	{
+		cout << "Invalid address \n";
+		cout << "Enter a new address location: ";
+		cin >> nAddress;
+		nnAddress = nAddress;
+	}
+	return nnAddress;
 }
