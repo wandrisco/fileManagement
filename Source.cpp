@@ -27,9 +27,8 @@ our file system.
 
 using namespace std;
 
-void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), ;
-;
-char* ReadWord(int nAddress);
+void menu(), choice(int input), EraseAllSectors(), returnMenu();
+int EraseSector(int nSectorNr), ReadWord(int nAddress), writeWord(int nAddress);
 
 //Creates a file that is 20*64k bytes long
 int main(void) {
@@ -50,7 +49,7 @@ void menu(){
 	cout << "*****DRIVER*************\n"
 		<< "*****MENU OPTIONS*******\n\n";
 	cout << "1 - Erase All Sectors\n"
-		<< "2 - Erase a Sector from Memory\n"
+		<< "2 - [Erase a Sector from Memory\n"
 		<< "3 - Read a Word from Memory\n"
 		<< "4 - Write a Word to Memory\n"
 		<< "5 - Terminate Driver\n\n";
@@ -82,10 +81,6 @@ void choice(int input) {
 		case 3:
 			cout << "Enter an address location to read from: ";
 			cin >> nAddress;
-
-			nnAddress = checkAddress(nAddress);
-			ReadWord(nnAddress);
-
 			while (nAddress % 2 != 0)
 			{
 				cout << "Invalid address \n";
@@ -93,16 +88,11 @@ void choice(int input) {
 				cin >> nAddress;
 			}
 			ReadWord(nAddress);
-
 			break;
 		case 4:
 			cout << "Enter an address location to write to: ";
 			cin >> nAddress;
-			nnAddress = checkAddress(nAddress);
-			writeWord(nnAddress);
-
 			writeWord(nAddress);
-
 			break;
 			//Working on Invalid Entry Response
 		default:
@@ -146,8 +136,7 @@ void EraseAllSectors() {
 	returnMenu();
 }
 
-void EraseSector(int nSectorNr) {
-
+int EraseSector(int nSectorNr) {
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 	myFile.seekp(nSectorNr * 65536);
 
@@ -165,8 +154,7 @@ void EraseSector(int nSectorNr) {
 	return 0;
 }
 
-char* ReadWord(int nAddress) {
-
+int ReadWord(int nAddress) {
 	char filename[] = "myfile.bin";
 	unsigned char buf[2];
 	FILE *fp;
@@ -190,13 +178,10 @@ char* ReadWord(int nAddress) {
 	}
 
 	fclose(fp);
-
 	return 0;
 }
 //writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
-
-void writeWord(int nSectorNr) {
-
+int writeWord(int nSectorNr) {
 	fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
 
 	if (!myFile.is_open()){
@@ -205,7 +190,7 @@ void writeWord(int nSectorNr) {
 	}
 	else {
 
-		while (nSectorNr >= 0 || nSectorNr <= 19)
+		while (nSectorNr >=0 || nSectorNr<=19)
 		{
 
 			myFile.seekp(nSectorNr * 65536);
@@ -227,21 +212,8 @@ void writeWord(int nSectorNr) {
 			cout << bytes << " was successfully written to address location" << (lb / 65536) - 1 << ".\n\n";
 			returnMenu();
 		}
-
-
+		
+		
 		return 0;
 	}
-}
-
-int checkAddress(int nAddress){
-	int nnAddress;
-	while (nAddress % 2 != 0)
-	{
-		cout << "Invalid address \n";
-		cout << "Enter a new address location: ";
-		cin >> nAddress;
-		nnAddress = nAddress;
-	}
-	return nnAddress;
-
 }
