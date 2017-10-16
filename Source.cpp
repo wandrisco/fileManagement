@@ -1,45 +1,51 @@
 /*
- 
  Kristian Kilpatrick
  J00444517
  
  Corey Wandrisco
  J00486359
  
- User 3
+ Meshari
+ J
+ 
+ User X
  J
  
  Fernando Lorenzo
  J00612810
  
  Assigned:10-04-2017
- Due: 10-17-2017
+ Due: 10-11-2017
  
  The purpose of this code is to simulate driver functions for
  our file system.
  
+ **Version 1.0**
+ 
  */
+
 
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
-
+#pragma warning(disable:4996)
 
 using namespace std;
 
-void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr);
+using namespace std;
+
+void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), createFile();
 int checkAddress(int nAddress);
-char* ReadWord(int nAddress);
+unsigned char* ReadWord(int nAddress);
 
 //Creates a file that is 20*64k bytes long
 int main(void) {
     
     menu();
-    
     return 0;
 }
 
-void menu(){
+void menu() {
     int input;
     cout << "*****DRIVER*************\n"
     << "*****MENU OPTIONS*******\n\n";
@@ -56,11 +62,13 @@ void menu(){
 }
 
 void choice(int input) {
-    int nAddress, nSector, nnAddress, nnnAddress;
-    while (input != 5){
+    int nAddress, nSector, nnAddress;
+    while (input != 5) {
         switch (input) {
             case 1:
                 EraseAllSectors();
+                //menu();
+                returnMenu();
                 break;
                 
             case 2:
@@ -73,6 +81,8 @@ void choice(int input) {
                     cout << "\n";
                 }
                 EraseSector(nSector);
+                //menu();
+                returnMenu();
                 break;
                 
             case 3:
@@ -80,6 +90,8 @@ void choice(int input) {
                 cin >> nAddress;
                 nnAddress = checkAddress(nAddress);
                 ReadWord(nnAddress);
+                //menu();
+                returnMenu();
                 break;
                 
             case 4:
@@ -87,6 +99,12 @@ void choice(int input) {
                 cin >> nAddress;
                 nnAddress = checkAddress(nAddress);
                 writeWord(nnAddress);
+                //menu();
+                returnMenu();
+                break;
+                
+            case 5:
+                cout << "DRIVER TERMINATED.";
                 break;
                 
                 //Working on Invalid Entry Response
@@ -100,22 +118,26 @@ void choice(int input) {
     }
 }
 
-void returnMenu(){
+void returnMenu() {
     char input;
     cout << "Return to Main Menu? (y/n)\n";
     cin >> input;
     cout << endl;
-    while (input = 'y'){
-        menu();
+    while (input != 3) {
+        switch (input) {
+            case 'y':
+                menu();
+                break;
+            case 'n':
+                break;
+        }
+        break;
     }
 }
 
 void EraseAllSectors() {
-    int X = 65536 * 20;
-    FILE *fp = fopen("myfile.bin", "wb");
-    fseek(fp, X, SEEK_SET);
-    fputc('/0', fp);
-    fclose(fp);
+    
+    createFile();
     
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     for (int i = 0; i <= (65536 * 20); ++i)
@@ -124,10 +146,11 @@ void EraseAllSectors() {
         myFile.write(&x, sizeof(char));
     }
     cout << "All sectors successfully erased\n\n";
-    returnMenu();
 }
 
 void EraseSector(int nSectorNr) {
+    
+    createFile();
     
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     myFile.seekp(nSectorNr * 65536);
@@ -137,24 +160,27 @@ void EraseSector(int nSectorNr) {
     
     for (lb; lb < hb; ++lb)
     {
-        char x = 1;
+        char x = ~0;
         myFile.write(&x, sizeof(char));
     }
-    
-    cout << "Sector " << (lb / 65536) - 1 << " successfully erased\n\n";
-    returnMenu();
+    myFile.close();
+    cout << "Sector " << (lb / 65536) - 1 << " successfully erased.\n\n";
 }
 
-char* ReadWord(int nAddress) {
+unsigned char* ReadWord(int nAddress) {
+    
+    createFile();
     
     char filename[] = "myfile.bin";
     unsigned char buf[2];
+    unsigned char* tempWord;
+    tempWord = new unsigned char[2];
     FILE *fp;
     
     if ((fp = fopen(filename, "rb")) == NULL)
     {
         printf("Unable to open file: %s", filename);
-        return 0;
+        return NULL;
     }
     
     fseek(fp, nAddress, SEEK_SET);
@@ -165,43 +191,48 @@ char* ReadWord(int nAddress) {
         printf("%i", nAddress);
         printf("%s", " Reads: ");
         printf("%02x %02x\n\n", (int)buf[0], (int)buf[1]);
-        
-        returnMenu();
+        tempWord = buf;
+        fclose(fp);
+        //menu();
+        return tempWord;
     }
-    
-    fclose(fp);
 }
-//writeWord just needs a little touch up. Not successfully writing byte, and only writes one byte
+
+//bitwise addition needs help
 
 void writeWord(int nAddress) {
+    
+    createFile();
+    
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     
-    if (!myFile.is_open()){
+    if (!myFile.is_open()) {
         cout << "The file cannot be opened.\n";
         menu();
     }
     else {
-        myFile.seekp(nAddress);
+        myFile.seekg(nAddress);
         char bytes[2];
-        
-        cout << "Enter bytes to be written to address location " << (nAddress - 1) << ": ";
+        short oldWord = *ReadWord(nAddress);
+        cout << "\nEnter bytes to be written to address location " << (nAddress) << ": ";
         cin >> bytes;
+        short newWord = *bytes;
+        newWord = newWord & oldWord;
         cin.ignore();
         cout << endl;
         
         myFile.write(bytes, 2);
         
-        cout << bytes << " was successfully written to address location " << (nAddress - 1) << ".\n\n";
-        returnMenu();
+        cout << bytes << " was successfully written to address location " << (nAddress) << ".\n\n";
+        myFile.close();
     }
 }
-
 
 int checkAddress(int nAddress) {
     int nnAddress;
     
     if (nAddress % 2 != 0) {
-        while (nAddress % 2 != 0) {
+        while (nAddress % 2 != 0 || nAddress < 0 || nAddress > 20 * 65536) {
             cout << "Invalid address \n";
             cout << "Enter a new address location: ";
             cin >> nAddress;
@@ -211,5 +242,18 @@ int checkAddress(int nAddress) {
     }
     else {
         return nAddress;
+    }
+}
+
+void createFile() {
+    fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
+    
+    if (!myFile.is_open()) {
+        int X = 65536 * 20;
+        FILE *fp = fopen("myfile.bin", "wb");
+        fseek(fp, X, SEEK_SET);
+        fputc('/0', fp);
+        fclose(fp);
+        EraseAllSectors();
     }
 }
