@@ -32,9 +32,9 @@
 
 using namespace std;
 
-void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), createFile();
+void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), createFile(), debug();
 
-int checkAddress(int nAddress);
+int checkAddress(int nAddress), checkSector(int nSector);
 
 unsigned char* ReadWord(int nAddress);
 
@@ -66,7 +66,7 @@ void menu() {
 
 //allows user to input a choice
 void choice(int input) {
-    int nAddress, nSector, nnAddress;
+    int nAddress, nSector, newAddress, newSector;
     while (input) {
         switch (input) {
             case 1:
@@ -77,29 +77,24 @@ void choice(int input) {
             case 2:
                 cout << "Enter a sector to erase from memory: ";
                 cin >> nSector;
-                while (nSector < 0 || nSector >19)
-                {
-                    cout << "\nInvalid sector. Try again: ";
-                    cin >> nSector;
-                    cout << "\n";
-                }
-                EraseSector(nSector);
+                newSector = checkSector(nSector);
+                EraseSector(newSector);
                 returnMenu();
                 break;
                 
             case 3:
                 cout << "Enter an address location to read from: ";
                 cin >> nAddress;
-                nnAddress = checkAddress(nAddress);
-                ReadWord(nnAddress);
+                newAddress = checkAddress(nAddress);
+                ReadWord(newAddress);
                 returnMenu();
                 break;
                 
             case 4:
                 cout << "Enter an address location to write to: ";
                 cin >> nAddress;
-                nnAddress = checkAddress(nAddress);
-                writeWord(nnAddress);
+                newAddress = checkAddress(nAddress);
+                writeWord(newAddress);
                 returnMenu();
                 break;
                 
@@ -108,7 +103,7 @@ void choice(int input) {
                 
                 //Working on Invalid Entry Response
             default:
-                cout << "Invalid Entry. Please enter new option: ";
+                cout << "Invalid Menu Option. Please enter new option: ";
                 cin >> input;
                 choice(input);
                 cin.ignore();
@@ -153,11 +148,12 @@ void EraseAllSectors() {
 void EraseSector(int nSectorNr) {
     
     createFile();
+    //debug();
     
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     myFile.seekp(nSectorNr * 65536);
     
-    int lb = nSectorNr * 65536;
+    int lb = (nSectorNr * 65536);
     int hb = ((nSectorNr + 1) * 65536);
     
     for (lb; lb < hb; ++lb)
@@ -232,19 +228,37 @@ void writeWord(int nAddress) {
 
 //checks if the address entered is valid
 int checkAddress(int nAddress) {
-    int nnAddress;
+    int newAddress;
     
     if (nAddress % 2 != 0) {
         while (nAddress % 2 != 0 || nAddress < 0 || nAddress > 20 * 65536) {
             cout << "Invalid address \n";
             cout << "Enter a new address location: ";
             cin >> nAddress;
-            nnAddress = nAddress;
+            newAddress = nAddress;
         }
-        return nnAddress;
+        return newAddress;
     }
     else {
         return nAddress;
+    }
+}
+
+//checks if the sector entered is valid
+int checkSector(int nSector) {
+    int newSector;
+    
+    if (nSector < 0 || nSector > 19) {
+        while (nSector < 0 || nSector > 19) {
+            cout << "\nInvalid sector. Enter new sector: ";
+            cin >> nSector;
+            cout << "\n";
+            newSector = nSector;
+        }
+        return newSector;
+    }
+    else {
+        return nSector;
     }
 }
 
@@ -253,11 +267,27 @@ void createFile() {
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     
     if (!myFile.is_open()) {
-        int X = 65536 * 20;
-        FILE *fp = fopen("myfile.bin", "wb");
-        fseek(fp, X, SEEK_SET);
-        fputc('/0', fp);
-        fclose(fp);
-        EraseAllSectors();
+        char input;
+        cout << "myfile.bin does not exist. Would you like to create it?(y/n)\n";
+        cin >> input;
+        if (input == 'y') {
+            int X = 65536 * 20;
+            FILE *fp = fopen("myfile.bin", "wb");
+            fseek(fp, X, SEEK_SET);
+            fputc('/0', fp);
+            fclose(fp);
+            cout << "myfile.bin successfully created.\n\n";
+        }
+        else {
+            cout << "myfile.bin not created. Returning to Main Menu.\n\n";
+            menu();
+        }
     }
+    /*else {
+     cout << "myfile.bin was successfully opened.\n\n";
+     }*/
+}
+
+void debug(){
+    cout << "the code has reached debug 1";
 }
