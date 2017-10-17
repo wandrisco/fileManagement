@@ -47,6 +47,7 @@ int main(void) {
     return 0;
 }
 //displays menu input options
+
 void menu() {
     int input;
     cout << "*****DRIVER*************\n"
@@ -66,7 +67,7 @@ void menu() {
 //allows user to input a choice
 void choice(int input) {
     int nAddress, nSector, nnAddress;
-    while (input != 5) {
+    while (input) {
         switch (input) {
             case 1:
                 EraseAllSectors();
@@ -103,8 +104,7 @@ void choice(int input) {
                 break;
                 
             case 5:
-                cout << "DRIVER TERMINATED.";
-                break;
+                exit(1);
                 
                 //Working on Invalid Entry Response
             default:
@@ -123,7 +123,7 @@ void returnMenu() {
     cout << "Return to Main Menu? (y/n)\n";
     cin >> input;
     cout << endl;
-    while (input != 3) {
+    while (input) {
         switch (input) {
             case 'y':
                 menu();
