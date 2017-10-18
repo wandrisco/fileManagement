@@ -32,7 +32,7 @@
 
 using namespace std;
 
-void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), createFile(), debug();
+void menu(), choice(int input), EraseAllSectors(), returnMenu(), writeWord(int nAddress), EraseSector(int nSectorNr), createFile(), checkInput();
 
 int checkAddress(int nAddress), checkSector(int nSector);
 
@@ -40,8 +40,8 @@ unsigned char* ReadWord(int nAddress);
 
 int main(void) {
     
-    cout << "Creators: \n"
-    << "Kristian Kilpatrick\nCorey Wandrisco\nMeshari Algumaizi\nJordan Day\n& Fernando Lorenzo\n\n";
+    cout << "*Creators* \n"
+    << "Kristian Kilpatrick,\nCorey Wandrisco,\nMeshari Algumaizi,\nJordan Day,\n& Fernando Lorenzo\n\n";
     
     menu();
     return 0;
@@ -50,14 +50,14 @@ int main(void) {
 
 void menu() {
     int input;
-    cout << "*****DRIVER*************\n"
-    << "*****MENU OPTIONS*******\n\n";
+    cout << "*DRIVER*\n"
+    << "*MENU OPTIONS*\n\n";
     cout << "1 - Erase All Sectors\n"
     << "2 - Erase a Sector from Memory\n"
     << "3 - Read a Word from Memory\n"
     << "4 - Write a Word to Memory\n"
     << "5 - Terminate Driver\n\n";
-    cout << "Enter A Menu Option: ";
+    cout << "Enter a menu option: ";
     cin >> input;
     cin.ignore();
     cout << endl;
@@ -75,6 +75,7 @@ void choice(int input) {
                 break;
                 
             case 2:
+                createFile();
                 cout << "Enter a sector to erase from memory: ";
                 cin >> nSector;
                 newSector = checkSector(nSector);
@@ -83,6 +84,7 @@ void choice(int input) {
                 break;
                 
             case 3:
+                createFile();
                 cout << "Enter an address location to read from: ";
                 cin >> nAddress;
                 newAddress = checkAddress(nAddress);
@@ -91,6 +93,7 @@ void choice(int input) {
                 break;
                 
             case 4:
+                createFile();
                 cout << "Enter an address location to write to: ";
                 cin >> nAddress;
                 newAddress = checkAddress(nAddress);
@@ -141,14 +144,13 @@ void EraseAllSectors() {
         char x = ~0;
         myFile.write(&x, sizeof(char));
     }
-    cout << "All sectors successfully erased\n\n";
+    cout << "All sectors successfully erased\n";
 }
 
 //erase a sector from user prompt, creates a file if one is not present
 void EraseSector(int nSectorNr) {
     
-    createFile();
-    //debug();
+    //createFile();
     
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     myFile.seekp(nSectorNr * 65536);
@@ -162,13 +164,13 @@ void EraseSector(int nSectorNr) {
         myFile.write(&x, sizeof(char));
     }
     myFile.close();
-    cout << "Sector " << (lb / 65536) - 1 << " successfully erased.\n\n";
+    cout << "Sector " << (lb / 65536) - 1 << " successfully erased.\n";
 }
 
 //reads a word from an address in the file, creates a file if one is not present
 unsigned char* ReadWord(int nAddress) {
     
-    createFile();
+    //createFile();
     
     char filename[] = "myfile.bin";
     unsigned char buf[2];
@@ -199,7 +201,7 @@ unsigned char* ReadWord(int nAddress) {
 //bitwise does not check, but does write, creates a file if one is not present
 void writeWord(int nAddress) {
     
-    createFile();
+    //createFile();
     
     fstream myFile("myfile.bin", ios::in | ios::out | ios::binary);
     
@@ -270,6 +272,7 @@ void createFile() {
         char input;
         cout << "myfile.bin does not exist. Would you like to create it?(y/n)\n";
         cin >> input;
+        cout << endl;
         if (input == 'y') {
             int X = 65536 * 20;
             FILE *fp = fopen("myfile.bin", "wb");
@@ -288,6 +291,3 @@ void createFile() {
      }*/
 }
 
-void debug(){
-    cout << "the code has reached debug 1";
-}
